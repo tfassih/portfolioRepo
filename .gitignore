@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+.venv/
+node_modules/
+__pycache__/
+*.pyc
+*.sqlite3
+staticfiles/
+.astro/
+dist/
+.vercel/
+.DS_Store
