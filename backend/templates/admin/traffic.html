@@ -8,8 +8,8 @@
   <thead><tr><th>Date</th><th>Views</th><th>Relative volume</th></tr></thead>
   <tbody>{% for row in rows %}
     <tr><td>{{ row.day|date:"M d" }}</td><td>{{ row.n }}</td>
-    <td style="width:300px"><div aria-hidden="true" style="height:12px;
-      background:var(--link-fg);width:{{ row.width }}%"></div></td></tr>
+    <td style="width:300px"><div aria-hidden="true" width="{{ row.width }}%"
+      style="height:12px;background:var(--link-fg)"></div></td></tr>
   {% endfor %}</tbody>
 </table>
 <h2>Top pages</h2><table>
