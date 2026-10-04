@@ -1,0 +1,13 @@
+---
+import Layout from "../layouts/Layout.astro";
+Astro.response.status = 404;
+---
+
+<Layout title="Page not found" noindex
+  ><h1>Page not found.</h1>
+  <p>
+    The page may have moved. <a href="/">Return home</a> or <a href="/search/"
+      >search the work</a
+    >.
+  </p>
+</Layout>

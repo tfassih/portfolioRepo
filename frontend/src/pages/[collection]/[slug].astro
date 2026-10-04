@@ -1,0 +1,56 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { get, date } from "../../lib/backend.js";
+const { collection, slug } = Astro.params;
+let entry = null;
+if (["writing", "software", "blog"].includes(collection)) {
+  try {
+    entry = await get(`/api/entry/${encodeURIComponent(slug)}/`);
+  } catch (error) {
+    if (error.status !== 404) throw error;
+  }
+}
+if (entry?.kind !== collection) entry = null;
+if (!entry) Astro.response.status = 404;
+---
+<Layout
+  title={entry?.title || "Entry not found"}
+  description={entry?.seo_description}
+  image={entry?.thumbnail?.src}
+  article={entry}
+  noindex={!entry}
+>
+  {
+    entry ? (
+      <article class="reader">
+        <a href={`/${collection}/`}>Back to collection ←</a>
+        <h1>{entry.title}</h1>
+        <p class="meta">
+          <time datetime={entry.published_at}>{date(entry.published_at)}</time>
+          {" · "}
+          {Astro.locals.site.name}
+        </p>
+        {entry.thumbnail && <img src={entry.thumbnail.src} alt={entry.thumbnail.alt} />}
+        <div class="tags">
+          {entry.tags.map((tag) => (
+            <a href={`/search/?tag=${encodeURIComponent(tag.slug)}`}>{tag.name}</a>
+          ))}
+        </div>
+        <div class="prose" set:html={entry.body_html} />
+        {entry.repo_url && (
+          <a class="button" href={entry.repo_url} rel="noopener noreferrer">
+            View GitHub repository ↗
+          </a>
+        )}
+      </article>
+    ) : (
+      <>
+        <>
+          <h1>Entry not found</h1>
+          <p>This entry is unavailable.</p>
+          <a href="/">Return home</a>
+        </>
+      </>
+    )
+  }
+</Layout>

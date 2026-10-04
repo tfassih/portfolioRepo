@@ -1,0 +1,44 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Gallery from "../../components/Gallery.jsx";
+import { get } from "../../lib/backend.js";
+const { kind } = Astro.params;
+const valid = ["images", "videos"].includes(kind);
+const data = valid ? await get(`/api/gallery/${kind}/`) : { items: [] };
+if (!valid) Astro.response.status = 404;
+const title = !valid
+  ? "Page not found"
+  : kind === "images"
+    ? "Image gallery"
+    : "Video gallery";
+---
+
+<Layout title={title} noindex={!valid}>
+  <div class="gallery-page">
+    <div class="page-head">
+      <div><span class="eyebrow">Art portfolio</span><h1>{title}</h1></div>
+      <a href="/art/">All art ←</a>
+    </div>
+    {
+      valid && (
+        <>
+        <Gallery items={data.items} kind={kind} client:load />
+          <noscript>
+            <style is:inline set:html={".gallery{display:none}"} />
+            {data.items.map((item) => (
+              <article>
+                <h2>{item.title}</h2>
+                <img
+                  src={(kind === "images" ? item.asset : item.poster).src}
+                  alt={(kind === "images" ? item.asset : item.poster).alt}
+                />
+                {kind === "videos" && <p>Enable JavaScript to use the video player.</p>}
+                <div class="prose" set:html={item.description_html} />
+              </article>
+            ))}
+          </noscript>
+        </>
+      )
+    }
+  </div>
+</Layout>

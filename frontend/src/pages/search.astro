@@ -1,0 +1,47 @@
+---
+import Layout from "../layouts/Layout.astro";
+import EntryCard from "../components/EntryCard.astro";
+import { get } from "../lib/backend.js";
+const params = new URLSearchParams();
+for (const key of ["q", "tag", "kind", "category", "page"]) {
+  const value = Astro.url.searchParams.get(key);
+  if (value) params.set(key, value.slice(0, 200));
+}
+const data = await get("/api/entries/?" + params);
+const link = (n) => {
+  const copy = new URLSearchParams(params);
+  copy.set("page", String(n));
+  return "?" + copy;
+};
+---
+<Layout title="Search" noindex>
+  <div class="page-head">
+    <h1>{params.get("tag") ? `Tagged: ${params.get("tag")}` : "Search the work"}</h1>
+  </div>
+  <form class="search" method="get">
+    <label
+      >Search titles and text
+      <input
+        name="q"
+        type="search"
+        value={params.get("q") || ""}
+        maxlength="200"
+      /></label
+    >
+    {
+      ["kind", "category", "tag"].map(
+        (key) =>
+          params.get(key) && <input type="hidden" name={key} value={params.get(key)} />,
+      )
+    }
+    <button type="submit">Search</button><a href="/search/">Clear filters</a>
+  </form>
+  <p>{data.total} results</p>
+  {data.items.map((entry) => <EntryCard entry={entry} />)}
+  {!data.items.length && <p>No matching entries. Try another word.</p>}
+  <div class="actions">
+    {data.page > 1 && <a href={link(data.page - 1)}>Previous page</a>}
+    <span>{data.page} / {data.pages}</span>
+    {data.page < data.pages && <a href={link(data.page + 1)}>Next page</a>}
+  </div>
+</Layout>

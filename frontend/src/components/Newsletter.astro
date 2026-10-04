@@ -1,0 +1,24 @@
+<section class="newsletter reveal" aria-labelledby="subscribe-title">
+  <h2 id="subscribe-title">Follow the next idea.</h2>
+  <p>
+    Receive email notifications when new blog posts are published. Unsubscribe at any
+    time.
+  </p>
+  <form action="/api/subscribe/" method="post" class="search">
+    <label
+      >Email address<input
+        name="email"
+        type="email"
+        autocomplete="email"
+        required
+        maxlength="254"
+      /></label
+    >
+    <label class="trap" aria-hidden="true"
+      >Website<input name="website" tabindex="-1" autocomplete="off" /></label
+    >
+    <button type="submit">Subscribe</button>
+  </form><p class="meta">
+    We will send a confirmation link. <a href="/privacy/">Privacy details</a>.
+  </p>
+</section>

@@ -1,0 +1,19 @@
+---
+import Layout from "../../layouts/Layout.astro";
+const failed = Astro.url.searchParams.get("state") === "error";
+---
+
+<Layout title="Email subscription" noindex
+  ><article class="reader">
+    <h1>{failed ? "Please try again." : "Check your inbox."}</h1>
+    <p>
+      {
+        failed
+          ? "We could not process the request. Please wait a few minutes and try again."
+          : "If this address can receive a confirmation, a link will arrive shortly. " +
+            "Open it to confirm your subscription."
+      }
+    </p>
+    <a href="/blog/">Return to the blog</a>
+  </article></Layout
+>

@@ -1,0 +1,5 @@
+{% extends "admin/index.html" %}
+    {% block content %}
+        <p><a href="{% url 'studio:traffic' %}">Open traffic dashboard</a></p>
+    {{ block.super }}
+{% endblock %}

@@ -1,0 +1,10 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Privacy"
+  ><article class="reader">
+    <h1>Privacy</h1>
+    <div class="prose" set:html={Astro.locals.site.privacy_html} />
+  </article></Layout
+>

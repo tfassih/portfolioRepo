@@ -1,0 +1,25 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<h1>{{ total }} recorded page views</h1>
+<p>Last 30 days. Anonymous, approximate counts; not unique people.
+  Blocked scripts and automated traffic affect these numbers.</p>
+<h2>Daily page views</h2>
+<table>
+  <thead><tr><th>Date</th><th>Views</th><th>Relative volume</th></tr></thead>
+  <tbody>{% for row in rows %}
+    <tr><td>{{ row.day|date:"M d" }}</td><td>{{ row.n }}</td>
+    <td style="width:300px"><div aria-hidden="true" style="height:12px;
+      background:var(--link-fg);width:{{ row.width }}%"></div></td></tr>
+  {% endfor %}</tbody>
+</table>
+<h2>Top pages</h2><table>
+  <thead><tr><th>Path</th><th>Views</th></tr></thead>
+  <tbody>{% for row in pages %}<tr><td>{{ row.path }}</td><td>{{ row.n }}</td></tr>
+      {% endfor %}</tbody>
+</table>
+<h2>Referring domains</h2><table>
+  <thead><tr><th>Domain</th><th>Views</th></tr></thead>
+  <tbody>{% for row in referrers %}<tr><td>{{ row.referrer|default:"Direct / unknown" }}</td>
+    <td>{{ row.n }}</td></tr>{% endfor %}</tbody>
+</table>
+{% endblock %}

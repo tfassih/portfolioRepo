@@ -1,0 +1,34 @@
+---
+import { date } from "../lib/backend.js";
+const { entry, heading = "h2" } = Astro.props;
+const Heading = heading;
+---
+
+<article class="entry reveal">
+  {
+    entry.thumbnail && (
+      <img
+        class="avatar"
+        src={entry.thumbnail.src}
+        alt={entry.thumbnail.alt}
+        width="72"
+        height="82"
+        loading="lazy"
+      />
+    )
+  }
+  <div>
+    <Heading><a href={`/${entry.kind}/${entry.slug}/`}>{entry.title}</a></Heading>
+    <p class="meta">
+      <time datetime={entry.published_at}>{date(entry.published_at)}</time>
+    </p>
+    {entry.excerpt && <p>{entry.excerpt}</p>}
+    <div class="tags">
+      {
+        entry.tags.map((tag) => (
+          <a href={`/search/?tag=${encodeURIComponent(tag.slug)}`}>{tag.name}</a>
+        ))
+      }
+    </div>
+  </div>
+</article>

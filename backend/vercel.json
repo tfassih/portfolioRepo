@@ -1,0 +1,5 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {"config/wsgi.py": {"maxDuration": 120}},
+  "crons": [{"path": "/jobs/daily/", "schedule": "0 15 * * *"}]
+}

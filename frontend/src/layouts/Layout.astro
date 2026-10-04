@@ -1,0 +1,130 @@
+---
+import "../styles/site.css";
+const { title = "", description, image, noindex = false, article } = Astro.props;
+const site = Astro.locals.site;
+const pageTitle = title ? `${title} | ${site.name}` : `${site.name} | ${site.title}`;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const page = Number(Astro.url.searchParams.get("page"));
+if (Number.isInteger(page) && page > 1)
+  canonicalUrl.searchParams.set("page", String(page));
+const canonical = canonicalUrl.href;
+const ogImage = image || site.social_image?.src;
+const links = [
+  ["/", "HOME"],
+  ["/resume/", "RESUME"],
+  ["/art/", "ART PORTFOLIO"],
+  ["/writing/", "WRITING PORTFOLIO"],
+  ["/software/", "SOFTWARE ENGINEERING"],
+  ["/blog/", "BLOG"],
+  ["/contact/", "CONTACT"],
+];
+const current = (path) =>
+  path === "/" ? Astro.url.pathname === "/" : Astro.url.pathname.startsWith(path);
+const schema = article
+  ? {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      headline: article.title,
+      datePublished: article.published_at,
+            dateModified: article.updated_at,
+      mainEntityOfPage: canonical,
+      author: { "@type": "Person", name: site.name },
+      image: ogImage,
+    }
+  : {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: site.name,
+      url: String(Astro.site),
+      jobTitle: site.title,
+    };
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description || site.description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex,follow" />}
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description || site.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:type" content={article ? "article" : "website"} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
+    <script
+      type="application/ld+json"
+      set:html={JSON.stringify(schema).replace(/</g, "\u003c")}
+    />
+    <script is:inline>
+      try {
+        const root = document.documentElement;
+        root.dataset.theme =
+          localStorage.getItem("theme") ||
+          (matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light");
+        root.dataset.motion = localStorage.getItem("motion") || "on";
+        if (
+          location.pathname === "/" &&
+          !sessionStorage.getItem("introduced") &&
+          !matchMedia("(prefers-reduced-motion:reduce)").matches &&
+          root.dataset.motion !== "off"
+        ) {
+          root.dataset.intro = "on";
+          sessionStorage.setItem("introduced", "1");
+        }
+      } catch (_) {
+        /* Storage may be unavailable; keep readable defaults. */
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="topbar">
+        <a class="brand" href="/">TF<span>.</span></a>
+        <div class="controls">
+          <button id="theme-toggle" type="button">Change theme</button>
+          <button id="motion-toggle" type="button" aria-pressed="true">Motion on</button
+          >
+          <button id="tilt-toggle" type="button">Enable tilt</button>
+        </div>
+      </div>
+      <details class="mobile-menu">
+        <summary>Menu</summary>
+        <nav aria-label="Mobile navigation">
+          {
+            links.map(([path, label]) => (
+              <a href={path} aria-current={current(path) ? "page" : undefined}>
+                {label}
+              </a>
+            ))
+          }
+        </nav>
+      </details>
+      <nav class="desktop-nav" aria-label="Main navigation">
+        {
+          links.map(([path, label]) => (
+            <a href={path} aria-current={current(path) ? "page" : undefined}>
+              {label}
+            </a>
+          ))
+        }
+      </nav>
+      <span id="motion-status" class="sr-only" role="status"></span>
+    </header>
+    <main id="main"><slot /></main>
+    <footer>
+      <span>© {new Date().getFullYear()} Thomas Fassih</span>
+      <a href="/privacy/">Privacy</a>
+    </footer>
+    <div id="page-loader" class="page-loader" hidden role="status">
+      <span class="spinner" aria-hidden="true"></span><span>Loading page…</span>
+    </div>
+    <script>
+      import "../scripts/site.js";
+    </script>
+  </body>
+</html>

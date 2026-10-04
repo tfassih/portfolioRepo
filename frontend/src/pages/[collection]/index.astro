@@ -1,0 +1,83 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import EntryCard from "../../components/EntryCard.astro";
+import Newsletter from "../../components/Newsletter.astro";
+import { get } from "../../lib/backend.js";
+const { collection } = Astro.params;
+const titles = {
+  writing: "Writing portfolio",
+  software: "Software engineering",
+  blog: "Blog",
+};
+const valid = Object.hasOwn(titles, collection);
+if (!valid) Astro.response.status = 404;
+const categories = [
+  ["fiction", "FICTION"],
+  ["research", "RESEARCH & ANALYSIS"],
+  ["technical", "TECHNICAL"],
+  ["screenplays", "SCREENPLAYS"],
+];
+let sections = [];
+if (collection === "writing") {
+  sections = await Promise.all(
+    categories.map(async ([slug, title]) => ({
+      title,
+      slug,
+      data: await get(`/api/entries/?kind=writing&category=${slug}`),
+    })),
+  );
+} else if (valid) {
+  const page = encodeURIComponent(Astro.url.searchParams.get("page") || "1");
+   sections = [
+    { title: "", data: await get(`/api/entries/?kind=${collection}&page=${page}`) },
+  ];
+}
+---
+<Layout title={titles[collection] || "Page not found"} noindex={!valid}>
+  <div class="page-head"><h1>{titles[collection] || "Page not found"}</h1></div>
+  {
+    valid && (
+      <form class="search" method="get" action="/search/">
+        <input type="hidden" name="kind" value={collection} />
+        <label>
+          Search this collection
+          <input type="search" name="q" maxlength="200" />
+        </label>
+        <button type="submit">Search</button>
+      </form>
+    )
+  }
+  {
+    sections.map((section) => (
+      <section class="reveal">
+        {section.title && <h2 class="eyebrow">{section.title}</h2>}
+        {section.data.items.length ? (
+          section.data.items.map((entry) => (
+            <EntryCard entry={entry} heading={collection === "writing" ? "h3" : "h2"} />
+          ))
+        ) : (
+          <p class="empty">COMING SOON</p>
+        )}
+        {collection === "writing" && section.data.pages > 1 && (
+          <a href={`/search/?kind=writing&category=${section.slug}`}>
+            View all in this section →
+          </a>
+        )}
+        {collection !== "writing" && section.data.pages > 1 && (
+          <div class="actions">
+            {section.data.page > 1 && (
+              <a href={`?page=${section.data.page - 1}`}>Previous page</a>
+            )}
+            <span>
+              {section.data.page} / {section.data.pages}
+            </span>
+            {section.data.page < section.data.pages && (
+              <a href={`?page=${section.data.page + 1}`}>Next page</a>
+            )}
+          </div>
+        )}
+      </section>
+    ))
+  }
+  {collection === "blog" && <Newsletter />}
+</Layout>

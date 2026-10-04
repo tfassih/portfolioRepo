@@ -1,0 +1,28 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Hero from "../components/Hero.jsx";
+const site = Astro.locals.site;
+---
+<Layout>
+  <div class="masthead eyebrow">
+    <span>The collected work of</span>
+    <span>Art · Engineering · Letters</span>
+  </div>
+  <section class="home-hero">
+    <Hero name={site.name} title={site.title} client:load />
+    <div class="engraving depth" aria-hidden="true">
+      <i></i><i></i><i></i><i></i><b>f.</b>
+    </div>
+  </section>
+  <section class="about-grid reveal">
+    <div>
+      <h2 class="eyebrow">A note from the author</h2>
+      <div class="prose" set:html={site.about_html} />
+    </div>
+    <div class="work-index">
+      <a href="/art/">I. Images & moving pictures <span>↗</span></a>
+      <a href="/writing/">II. Words & ideas <span>↗</span></a>
+      <a href="/software/">III. Systems & software <span>↗</span></a>
+    </div>
+  </section>
+</Layout>

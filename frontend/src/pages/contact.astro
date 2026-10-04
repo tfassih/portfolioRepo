@@ -1,0 +1,21 @@
+---
+import Layout from "../layouts/Layout.astro";
+const site = Astro.locals.site;
+const rows = [
+  ["EMAIL", site.email ? "mailto:" + site.email : "", site.email],
+  ["CALENDLY LINK", site.calendly, "Schedule a conversation"],
+  ["LINKEDIN", site.linkedin, "Connect on LinkedIn"],
+  ["GITHUB", site.github, "Explore the code"],
+];
+---
+<Layout title="Contact"
+  ><div class="page-head"><h1>Let’s talk.</h1></div>
+  {
+    rows.map(([label, href, text]) => (
+      <div class="contact-row reveal">
+        <span class="eyebrow">{label}</span>
+        {href ? <a href={href}>{text} ↗</a> : <span>COMING SOON</span>}
+      </div>
+    ))
+  }
+</Layout>

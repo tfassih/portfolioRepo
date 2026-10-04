@@ -1,0 +1,33 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { get } from "../../lib/backend.js";
+const [images, videos] = await Promise.all([
+  get("/api/gallery/images/"),
+  get("/api/gallery/videos/"),
+]);
+const choices = [
+  { name: "Images", href: "/art/images/", image: images.items[0]?.asset },
+  { name: "Videos", href: "/art/videos/", image: videos.items[0]?.poster },
+];
+---
+<Layout title="Art portfolio">
+  <div class="page-head">
+    <div><span class="eyebrow">Still / Moving</span><h1>Art portfolio</h1></div>
+  </div>
+  <div class="art-links">
+    {
+      choices.map((choice) => (
+        <a href={choice.href} class="reveal">
+          {choice.image ? (
+            <img src={choice.image.src} alt={choice.image.alt} />
+          ) : (
+            <div class="gallery-stage">
+              <span>COMING SOON</span>
+            </div>
+          )}
+          <h2>{choice.name} ↗</h2>
+        </a>
+      ))
+    }
+  </div>
+</Layout>

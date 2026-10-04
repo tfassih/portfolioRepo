@@ -1,0 +1,45 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { get } from "../lib/backend.js";
+const data = await get("/api/resume/");
+const api = import.meta.env.PUBLIC_API_ORIGIN;
+---
+<Layout title="Résumé / CV">
+  <div class="page-head">
+    <div><span class="eyebrow">Experience</span><h1>Résumé / CV</h1></div>
+    <div class="actions">
+      <a class="button" href={`${api}/resume.pdf`}>Download PDF ↓</a>
+      <a class="button" href={`${api}/resume.docx`}>Download DOCX ↓</a>
+    </div>
+  </div>
+  {
+    data.sections.map((section) => (
+      <section class="reveal">
+        <>
+          <h2>{section.title}</h2>
+          <div class="prose" set:html={section.body_html} />
+        </>
+        {section.jobs.map((job) => (
+          <article class="job">
+            <div>
+              {job.logo && <img class="avatar" src={job.logo.src} alt={job.logo.alt} />}
+            </div>
+            <div>
+              <h3>{job.title}</h3>
+              <strong>{job.company}</strong>
+              <p class="meta">
+                {job.start} - {job.end} · {job.location} · {job.job_type}
+              </p>
+              <div class="prose" set:html={job.description_html} />
+              <ul>
+                {job.accomplishments.map((text) => (
+                  <li>{text}</li>
+                ))}
+              </ul>
+            </div>
+          </article>
+        ))}
+      </section>
+    ))
+  }
+</Layout>

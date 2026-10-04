@@ -1,0 +1,23 @@
+---
+import Layout from "../../layouts/Layout.astro";
+const token = Astro.url.searchParams.get("token") || "";
+const done = Astro.url.searchParams.get("done") === "1";
+---
+
+<Layout title="Confirm subscription" noindex
+  ><article class="reader">
+    <h1>{done ? "You’re subscribed." : "Confirm your subscription"}</h1>
+    {
+      done ? (
+        <p>You will receive new blog notifications by email.</p>
+      ) : (
+        <form method="post" action="/api/confirm/">
+          <p>Confirm that you want email notifications from Thomas Fassih.</p>
+          <input type="hidden" name="token" value={token} />
+          <button type="submit">Confirm email subscription</button>
+        </form>
+      )
+    }
+    <p><a href="/blog/">Return to the blog</a></p>
+  </article></Layout
+>
