@@ -1,5 +1,7 @@
+import { disableContextMenu } from "./context-menu.js";
 import { initColorMode } from "./color-mode.js";
 import { initThemes } from "./themes.js";
+disableContextMenu();
 initColorMode();
 initThemes();
 const root = document.documentElement;
