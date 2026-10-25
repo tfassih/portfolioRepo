@@ -4,6 +4,8 @@
 
 **Public Deployment Date: TBD**
 
+Local setup and regression checks: [Testing guide](docs/testing.md).
+
 More or less self-explanatory. I had long since outgrown my last portfolio site, which I created around 2019, and decided it's time to put in the legwork to make one that's more than just a glorified gallery for my art.
 
 ## What I Wanted vs. What I Had

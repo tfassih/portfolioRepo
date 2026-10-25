@@ -131,7 +131,8 @@ class Entry(models.Model):
 
 
 class GalleryItem(models.Model):
-	kind = models.CharField(max_length=8, choices=[("images", "Image"), ("videos", "Video")])
+	KINDS = [("images", "Image"), ("videos", "Video"), ("photography", "Photography")]
+	kind = models.CharField(max_length=16, choices=KINDS)
 	title = models.CharField(max_length=180)
 	description = models.TextField(blank=True)
 	asset = models.ForeignKey(Asset, on_delete=models.PROTECT, related_name="+")
@@ -153,7 +154,7 @@ class GalleryItem(models.Model):
 			if self.published and obj and not obj.public:
 				raise ValidationError(f"{field} must be public to publish this gallery item.")
 		if self.asset_id and self.asset.mime:
-			expected = "image/" if self.kind == "images" else "video/"
+			expected = "video/" if self.kind == "videos" else "image/"
 			if not self.asset.mime.startswith(expected):
 				raise ValidationError(f"Asset MIME type must start with '{expected}' for {self.kind} gallery items.")
 

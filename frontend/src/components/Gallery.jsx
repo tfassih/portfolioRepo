@@ -21,6 +21,7 @@ function preload(src) {
   });
 }
 export default function Gallery({ items, kind }) {
+  const isImage = kind !== "videos";
   const [index, setIndex] = useState(0);
   const [state, setState] = useState("loading");
   const [attempt, setAttempt] = useState(0);
@@ -35,7 +36,7 @@ export default function Gallery({ items, kind }) {
     let fadeTimer;
     setState("loading");
     const urls = items.map((item) =>
-      kind === "images" ? item.asset.src : item.poster.src,
+      isImage ? item.asset.src : item.poster.src,
     );
     Promise.all([...new Set(urls)].map(preload))
       .then(() => {
@@ -51,7 +52,7 @@ export default function Gallery({ items, kind }) {
       cancelled = true;
       clearTimeout(fadeTimer);
     };
-  }, [items, kind, attempt]);
+  }, [items, isImage, attempt]);
   if (!items.length) return <p className="empty">COMING SOON</p>;
   const item = items[index];
   const change = (delta) => {
@@ -68,7 +69,7 @@ export default function Gallery({ items, kind }) {
   return (
     <section
       className="gallery"
-      aria-label={kind === "images" ? "Image gallery" : "Video gallery"}
+      aria-label={kind === "photography" ? "Photography gallery" : isImage ? "Image gallery" : "Video gallery"}
     >
       {["loading", "fading"].includes(state) && (
         <div
@@ -76,7 +77,7 @@ export default function Gallery({ items, kind }) {
           role="status"
         >
           <span className="spinner" aria-hidden="true" />
-          Loading {kind === "images" ? "images" : "posters"}…
+          Loading {isImage ? "images" : "posters"}…
         </div>
       )}
       {state === "error" && (
@@ -90,7 +91,7 @@ export default function Gallery({ items, kind }) {
       {state === "ready" && (
         <div className="gallery-ready">
           <div className="gallery-stage">
-            {kind === "images" ? (
+            {isImage ? (
               <button
                 ref={opener}
                 onClick={() => dialog.current.showModal()}
@@ -196,7 +197,7 @@ export default function Gallery({ items, kind }) {
               />
             </details>
           )}
-          {kind === "images" && (
+          {isImage && (
             <dialog
               className="lightbox"
               ref={dialog}
