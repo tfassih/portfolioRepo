@@ -28,3 +28,7 @@ The suite checks Chromium, Firefox, and a Chromium mobile viewport. Google Drive
 ## Photography (#5)
 
 With your normal local environment configured, apply migrations with `python manage.py migrate` from `backend`. In Studio, create a public image asset with alternative text, then add a Gallery item with Kind **Photography** and Published enabled. Check `/art/`, `/art/photography/`, next/previous navigation, fullscreen and Escape, and the no-JavaScript fallback. Existing Images and Videos should display their original content separately.
+
+## Footer color mode (#4)
+
+The sun/moon switch is in the footer. A new visitor follows the system light/dark setting, including changes while the page is open. Choosing a mode saves an override under the existing `theme` localStorage key; it persists across pages and synchronizes across tabs. Clear that key to resume following the system. Check both system modes, keyboard activation, blocked storage, and mobile layout. The page also follows the system color scheme without JavaScript.

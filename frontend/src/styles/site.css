@@ -18,6 +18,17 @@
   --accent: #e6a58c;
   color-scheme: dark;
 }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --paper: #211f1c;
+    --ink: #f0e8d8;
+    --muted: #bbae98;
+    --rule: #665b4c;
+    --panel: #2e2923;
+    --accent: #e6a58c;
+    color-scheme: dark;
+  }
+}
 * {
   box-sizing: border-box;
 }
@@ -210,11 +221,34 @@ footer {
   border-top: 1px solid var(--rule);
   padding: 22px 24px;
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   justify-content: space-between;
   gap: 20px;
   font-size: 12px;
   color: var(--muted);
   }
+.appearance-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+.mode-toggle {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border-radius: 50%;
+}
+.mode-to-light,
+:root[data-theme="dark"] .mode-to-dark {
+  display: none;
+}
+:root[data-theme="dark"] .mode-to-light {
+  display: block;
+}
 .eyebrow {
   font:
     12px/1.5 Arial,

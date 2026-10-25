@@ -25,7 +25,7 @@ export default defineConfig({
       reuseExistingServer: false,
     },
     {
-      command: "npm run dev -- --host 127.0.0.1 --port 4322 --ignore-lock",
+      command: "node tests/dev-server.js",
       url: "http://127.0.0.1:4322/",
       env: {
         API_ORIGIN: "http://127.0.0.1:8001",
