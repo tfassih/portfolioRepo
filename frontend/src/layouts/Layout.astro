@@ -1,5 +1,6 @@
 ---
 import "../styles/site.css";
+import appearanceInit from "../scripts/appearance-init.js?raw";
 const { title = "", description, image, noindex = false, article } = Astro.props;
 const site = Astro.locals.site;
 const pageTitle = title ? `${title} | ${site.name}` : `${site.name} | ${site.title}`;
@@ -59,26 +60,7 @@ const schema = article
       type="application/ld+json"
       set:html={JSON.stringify(schema).replace(/</g, "\u003c")}
     />
-    <script is:inline>
-      try {
-        const root = document.documentElement;
-        root.dataset.theme =
-          localStorage.getItem("theme") ||
-          (matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light");
-        root.dataset.motion = localStorage.getItem("motion") || "on";
-        if (
-          location.pathname === "/" &&
-          !sessionStorage.getItem("introduced") &&
-          !matchMedia("(prefers-reduced-motion:reduce)").matches &&
-          root.dataset.motion !== "off"
-        ) {
-          root.dataset.intro = "on";
-          sessionStorage.setItem("introduced", "1");
-        }
-      } catch (_) {
-        /* Storage may be unavailable; keep readable defaults. */
-      }
-    </script>
+    <script is:inline set:html={appearanceInit} />
   </head>
   <body>
     <a class="skip" href="#main">Skip to content</a>
@@ -86,7 +68,6 @@ const schema = article
       <div class="topbar">
         <a class="brand" href="/">TF<span>.</span></a>
         <div class="controls">
-          <button id="theme-toggle" type="button">Change theme</button>
           <button id="motion-toggle" type="button" aria-pressed="true">Motion on</button
           >
           <button id="tilt-toggle" type="button">Enable tilt</button>
@@ -119,6 +100,20 @@ const schema = article
     <footer>
       <span>© {new Date().getFullYear()} Thomas Fassih</span>
       <a href="/privacy/">Privacy</a>
+      <div class="appearance-controls">
+        <button id="theme-toggle" class="mode-toggle" type="button" role="switch"
+          aria-label="Dark mode" aria-checked="false" hidden>
+          <svg class="mode-to-dark" width="22" height="22" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true" focusable="false">
+            <path d="M20.5 14A8.5 8.5 0 0 1 10 3.5 8.5 8.5 0 1 0 20.5 14Z" />
+          </svg>
+          <svg class="mode-to-light" width="22" height="22" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5" />
+          </svg>
+        </button>
+      </div>
     </footer>
     <div id="page-loader" class="page-loader" hidden role="status">
       <span class="spinner" aria-hidden="true"></span><span>Loading page…</span>

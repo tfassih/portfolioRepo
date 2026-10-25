@@ -1,7 +1,7 @@
-export {};
+import { initColorMode } from "./color-mode.js";
+initColorMode();
 const root = document.documentElement;
 const reduced = matchMedia("(prefers-reduced-motion:reduce)");
-const theme = document.querySelector("#theme-toggle");
 const motion = document.querySelector("#motion-toggle");
 const tilt = document.querySelector("#tilt-toggle");
 const status = document.querySelector("#motion-status");
@@ -12,17 +12,11 @@ const store = (key, value) => {
 };
 const enabled = () => !reduced.matches && root.dataset.motion !== "off";
 function labels() {
-  theme.textContent = root.dataset.theme === "dark" ? "Light mode" : "Dark mode";
   motion.textContent = enabled() ? "Motion on" : "Motion off";
   motion.setAttribute("aria-pressed", String(enabled()));
 }
 labels();
 reduced.addEventListener("change", labels);
-theme.addEventListener("click", () => {
-  root.dataset.theme = root.dataset.theme === "dark" ? "light" : "dark";
-  store("theme", root.dataset.theme);
-  labels();
-});
 motion.addEventListener("click", () => {
   root.dataset.motion = enabled() ? "off" : "on";
   store("motion", root.dataset.motion);
