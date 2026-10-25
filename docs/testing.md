@@ -32,3 +32,13 @@ With your normal local environment configured, apply migrations with `python man
 ## Footer color mode (#4)
 
 The sun/moon switch is in the footer. A new visitor follows the system light/dark setting, including changes while the page is open. Choosing a mode saves an override under the existing `theme` localStorage key; it persists across pages and synchronizes across tabs. Clear that key to resume following the system. Check both system modes, keyboard activation, blocked storage, and mobile layout. The page also follows the system color scheme without JavaScript.
+
+## Themes (#3)
+
+Apply migrations before starting the frontend. Existing Website Settings receive the three bundled themes (Marginalia, Ocean, and Forest) without changing existing content. The default JSON file is `backend/content/themes.json`. The active configuration lives in the database on Website Settings, so it survives deployments without writing to the server filesystem.
+
+In Studio → Website Settings, edit **Theme configuration** or upload a UTF-8 `.json` file under **Import themes JSON**, then save. **Download themes.json** exports the current database configuration. Uploads are limited to 64 KiB. A configuration contains `version: 1`, a `default` theme ID, and a `themes` array (1–20 entries). Each entry has a unique lowercase/hyphenated `id`, a display `name`, and both `light` and `dark` objects. Each mode defines `paper`, `ink`, `muted`, `rule`, `panel`, and `accent` as six-digit hex colors. Use the bundled file as a starting point. Additional themes require no frontend code changes.
+
+All definitions arrive in the existing `/api/site/` response and their CSS is included in the page head. Switching the footer dropdown changes the selected theme locally, without a fetch or navigation. Color mode remains independent. The `portfolio-theme` localStorage key remembers the theme; deleted/unknown IDs fall back to the configured default. New configurations appear on the next page load (allow the existing 30-second CDN cache to refresh on deployed sites). With JavaScript disabled, the server-selected default still supports system light/dark mode.
+
+Browser tests cover every bundled theme in both modes, persistence, blocked storage, stale selections, no extra requests while switching, and the complete Studio JSON import/export → public site flow. Backend tests cover validation, permissions, invalid-data fallback, and upgrading an existing database.

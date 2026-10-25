@@ -3,8 +3,12 @@ from django import forms
 from django.contrib import admin, messages
 from django.db.models import Count
 from django.db.models.functions import TruncDate
+from django.core.exceptions import PermissionDenied
+from django.http import Http404, JsonResponse
 from django.shortcuts import render
-from django.urls import path
+from django.urls import path, reverse
+from django.utils.html import format_html
+from django.views.decorators.http import require_GET
 from django.utils import timezone
 from .models import (
     Asset,
@@ -21,6 +25,7 @@ from .models import (
 from .models import Visit
 from .drive import import_metadata
 from .emailing import process_one
+from .theme_forms import SettingsForm
 
 
 class StudioAdmin(admin.AdminSite):
@@ -108,6 +113,35 @@ class AssetAdmin(admin.ModelAdmin):
 
 @admin.register(SiteSettings, site=studio)
 class SettingsAdmin(admin.ModelAdmin):
+    form = SettingsForm
+    readonly_fields = ["theme_download_link"]
+
+    def get_urls(self):
+        return [path(
+            "<path:object_id>/themes.json",
+            self.admin_site.admin_view(require_GET(self.download_themes)),
+            name="content_sitesettings_themes",
+        )] + super().get_urls()
+
+    @admin.display(description="Export themes")
+    def theme_download_link(self, obj):
+        if not obj or not obj.pk:
+            return "Save settings to export the theme configuration."
+        return format_html('<a href="{}">Download themes.json</a>', reverse(
+            "studio:content_sitesettings_themes", args=[obj.pk],
+        ))
+
+    def download_themes(self, request, object_id):
+        obj = self.get_object(request, object_id)
+        if obj is None:
+            raise Http404
+        if not self.has_view_or_change_permission(request, obj):
+            raise PermissionDenied
+        response = JsonResponse(obj.theme_config, json_dumps_params={"indent": 2})
+        response["Content-Disposition"] = 'attachment; filename="themes.json"'
+        response["Cache-Control"] = "no-store"
+        return response
+
     def has_add_permission(self, request):
         return not SiteSettings.objects.exists()
     

@@ -13,6 +13,13 @@
     ? saved
     : matchMedia("(prefers-color-scheme:dark)").matches ? "dark" : "light";
   root.dataset.motion = read("localStorage", "motion") || "on";
+  try {
+    const config = JSON.parse(document.querySelector("#theme-config")?.textContent || "null");
+    if (Array.isArray(config?.themes)) {
+      const palette = read("localStorage", "portfolio-theme");
+      root.dataset.palette = config.themes.some(theme => theme.id === palette) ? palette : config.default;
+    }
+  } catch (_) {}
   if (
     location.pathname === "/" &&
     !read("sessionStorage", "introduced") &&

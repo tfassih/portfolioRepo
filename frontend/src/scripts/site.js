@@ -1,5 +1,7 @@
 import { initColorMode } from "./color-mode.js";
+import { initThemes } from "./themes.js";
 initColorMode();
+initThemes();
 const root = document.documentElement;
 const reduced = matchMedia("(prefers-reduced-motion:reduce)");
 const motion = document.querySelector("#motion-toggle");

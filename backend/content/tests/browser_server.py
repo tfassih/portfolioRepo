@@ -20,9 +20,11 @@ with TemporaryDirectory(prefix="portfolio-browser-tests-") as directory:
     call_command("migrate", verbosity=0)
 
     from content.models import Asset, Entry, GalleryItem, SiteSettings
+    from django.contrib.auth import get_user_model
     from config import urls
 
     SiteSettings.objects.create(description="Test portfolio", about="A portfolio of art and software.")
+    get_user_model().objects.create_superuser("browser-editor", "editor@example.test", "browser-tests-only")
     image = Asset.objects.create(name="Still", drive_id="test-still", mime="image/svg+xml", alt="Test landscape", public=True)
     clip = Asset.objects.create(name="Clip", drive_id="test-clip", mime="video/mp4", public=True)
     for kind, title, position in [

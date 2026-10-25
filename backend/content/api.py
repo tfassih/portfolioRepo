@@ -7,6 +7,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_GET
 from .models import SiteSettings, Entry, ResumeSection, GalleryItem
 from .rendering import rich_text
+from .themes import public_theme_config
 
 
 def asset_data(a):
@@ -71,6 +72,7 @@ def site(request):
             "github": s.github,
             "social_image": asset_data(s.social_image),
             "privacy_html": rich_text(s.privacy),
+            "theme_config": public_theme_config(s.theme_config),
         }
     )
 
