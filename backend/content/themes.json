@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "default": "marginalia",
+  "themes": [
+    {
+      "id": "marginalia",
+      "name": "Marginalia",
+      "light": {"paper": "#f3eee3", "ink": "#28231e", "muted": "#695b4d", "rule": "#baad97", "panel": "#e9e1d1", "accent": "#933d2b"},
+      "dark": {"paper": "#211f1c", "ink": "#f0e8d8", "muted": "#bbae98", "rule": "#665b4c", "panel": "#2e2923", "accent": "#e6a58c"}
+    },
+    {
+      "id": "ocean",
+      "name": "Ocean",
+      "light": {"paper": "#eef5f7", "ink": "#172d38", "muted": "#415e6c", "rule": "#9fb6bf", "panel": "#dce8ed", "accent": "#155c80"},
+      "dark": {"paper": "#10232d", "ink": "#e8f3f8", "muted": "#adc6d2", "rule": "#4a6877", "panel": "#193440", "accent": "#8dcef0"}
+    },
+    {
+      "id": "forest",
+      "name": "Forest",
+      "light": {"paper": "#f0f4e9", "ink": "#253025", "muted": "#4c604d", "rule": "#a5b39b", "panel": "#e0e8d5", "accent": "#34653c"},
+      "dark": {"paper": "#19251d", "ink": "#edf3e7", "muted": "#b7c8ad", "rule": "#5b7159", "panel": "#26382a", "accent": "#a0d494"}
+    }
+  ]
+}

@@ -1,8 +1,10 @@
 ---
 import "../styles/site.css";
 import appearanceInit from "../scripts/appearance-init.js?raw";
+import { themeStyles } from "../lib/theme-styles.js";
 const { title = "", description, image, noindex = false, article } = Astro.props;
 const site = Astro.locals.site;
+const themeConfig = site.theme_config;
 const pageTitle = title ? `${title} | ${site.name}` : `${site.name} | ${site.title}`;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 const page = Number(Astro.url.searchParams.get("page"));
@@ -41,7 +43,7 @@ const schema = article
     };
 ---
 <!doctype html>
-<html lang="en">
+<html lang="en" data-palette={themeConfig?.default}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -60,6 +62,9 @@ const schema = article
       type="application/ld+json"
       set:html={JSON.stringify(schema).replace(/</g, "\u003c")}
     />
+    <style is:inline set:html={themeStyles(themeConfig)} />
+    <script id="theme-config" type="application/json" is:inline
+      set:html={JSON.stringify(themeConfig || null).replace(/</g, "\\u003c")} />
     <script is:inline set:html={appearanceInit} />
   </head>
   <body>
@@ -101,6 +106,16 @@ const schema = article
       <span>© {new Date().getFullYear()} Thomas Fassih</span>
       <a href="/privacy/">Privacy</a>
       <div class="appearance-controls">
+        {themeConfig && (
+          <label id="theme-picker" class="theme-picker" hidden>
+            Theme
+            <select id="theme-select">
+              {themeConfig.themes.map(theme => (
+                <option value={theme.id} selected={theme.id === themeConfig.default}>{theme.name}</option>
+              ))}
+            </select>
+          </label>
+        )}
         <button id="theme-toggle" class="mode-toggle" type="button" role="switch"
           aria-label="Dark mode" aria-checked="false" hidden>
           <svg class="mode-to-dark" width="22" height="22" viewBox="0 0 24 24"

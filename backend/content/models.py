@@ -2,6 +2,7 @@ import uuid
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
+from .themes import default_theme_config, validate_theme_config
 
 class Asset(models.Model):
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -32,6 +33,7 @@ class SiteSettings(models.Model):
 	github = models.URLField(blank=True)
 	social_image = models.ForeignKey(Asset, on_delete=models.SET_NULL, null=True, blank=True, related_name="+")
 	privacy = models.TextField(blank=True)
+	theme_config = models.JSONField(default=default_theme_config, validators=[validate_theme_config])
 	updated_at = models.DateTimeField(auto_now=True)
 
 	def save(self, *args, **kwargs):

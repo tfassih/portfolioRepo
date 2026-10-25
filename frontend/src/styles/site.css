@@ -230,9 +230,24 @@ footer {
   }
 .appearance-controls {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   margin-left: auto;
+}
+.theme-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.theme-picker select {
+  font: inherit;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--muted);
+  min-height: 44px;
+  max-width: min(14rem, 55vw);
+  padding: 9px;
 }
 .mode-toggle {
   display: grid;
