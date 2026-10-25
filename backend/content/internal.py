@@ -67,6 +67,7 @@ def internal(request, action):
                 "/art/",
                 "/art/images/",
                 "/art/videos/",
+                "/art/photography/",
                 "/writing/",
                 "/software/",
                 "/blog/",

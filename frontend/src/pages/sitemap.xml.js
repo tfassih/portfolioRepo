@@ -14,6 +14,7 @@ export async function GET({ site }) {
     "/art/",
     "/art/images/",
     "/art/videos/",
+    "/art/photography/",
     "/writing/",
     "/software/",
     "/blog/",

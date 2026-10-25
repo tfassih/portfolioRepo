@@ -133,7 +133,7 @@ def entry(request, slug):
 
 @require_GET
 def gallery(request, kind):
-    if kind not in ["images", "videos"]:
+    if kind not in dict(GalleryItem.KINDS):
         return JsonResponse({"error": "Invalid kind"}, status=404)
     items = GalleryItem.objects.filter(kind=kind, published=True).select_related("asset", "poster", "captions", "described_video")
     return json_response(
@@ -150,7 +150,7 @@ def gallery(request, kind):
                     "transcript_html": rich_text(g.transcript),
                 }
                 for g in items
-                if g.asset.public and (g.kind == "images" or (g.poster and g.poster.public))
+                if g.asset.public and (g.kind != "videos" or (g.poster and g.poster.public))
             ]
         }
     )

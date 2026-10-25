@@ -3,14 +3,11 @@ import Layout from "../../layouts/Layout.astro";
 import Gallery from "../../components/Gallery.jsx";
 import { get } from "../../lib/backend.js";
 const { kind } = Astro.params;
-const valid = ["images", "videos"].includes(kind);
+const titles = { images: "Image gallery", videos: "Video gallery", photography: "Photography gallery" };
+const valid = Object.hasOwn(titles, kind);
 const data = valid ? await get(`/api/gallery/${kind}/`) : { items: [] };
 if (!valid) Astro.response.status = 404;
-const title = !valid
-  ? "Page not found"
-  : kind === "images"
-    ? "Image gallery"
-    : "Video gallery";
+const title = valid ? titles[kind] : "Page not found";
 ---
 
 <Layout title={title} noindex={!valid}>
@@ -29,8 +26,8 @@ const title = !valid
               <article>
                 <h2>{item.title}</h2>
                 <img
-                  src={(kind === "images" ? item.asset : item.poster).src}
-                  alt={(kind === "images" ? item.asset : item.poster).alt}
+                  src={(kind === "videos" ? item.poster : item.asset).src}
+                  alt={(kind === "videos" ? item.poster : item.asset).alt}
                 />
                 {kind === "videos" && <p>Enable JavaScript to use the video player.</p>}
                 <div class="prose" set:html={item.description_html} />
