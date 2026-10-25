@@ -42,3 +42,9 @@ In Studio → Website Settings, edit **Theme configuration** or upload a UTF-8 `
 All definitions arrive in the existing `/api/site/` response and their CSS is included in the page head. Switching the footer dropdown changes the selected theme locally, without a fetch or navigation. Color mode remains independent. The `portfolio-theme` localStorage key remembers the theme; deleted/unknown IDs fall back to the configured default. New configurations appear on the next page load (allow the existing 30-second CDN cache to refresh on deployed sites). With JavaScript disabled, the server-selected default still supports system light/dark mode.
 
 Browser tests cover every bundled theme in both modes, persistence, blocked storage, stale selections, no extra requests while switching, and the complete Studio JSON import/export → public site flow. Backend tests cover validation, permissions, invalid-data fallback, and upgrading an existing database.
+
+## Right-click behavior (#1)
+
+The public site suppresses the native context menu, including on gallery images, fullscreen images, and videos. Check that right-clicking a link does not navigate, then confirm that normal clicks, gallery navigation, Escape, video playback, text entry, and keyboard navigation still work. Studio retains its native context menu.
+
+This behavior requires JavaScript and does not restrict access to public media. Browsers can override it; for example, [Firefox intentionally permits Shift-right-click](https://developer.mozilla.org/en-US/docs/Web/API/Element/contextmenu_event). The browser suite checks cancellation of real right-click events and the interaction regressions above.
